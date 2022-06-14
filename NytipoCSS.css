@@ -1,0 +1,200 @@
+body{/*
+	margin: 0;
+	padding: 0;
+	*/font-family: 'M PLUS Rounded 1c';
+	box-sizing: content-box !important; /* Основывается на стандартах CSS, при этом свойства width и height задают ширину и высоту контента и не включают в себя значения отступов, полей и границ. */
+}
+/*Хеадер начало*/
+header{
+	background-color: #FFB054;
+}
+hr:not([size]){
+	height: 2px !important;
+}
+hr{
+	opacity: 1 !important;
+}
+header img{
+	margin-top:10px;
+	/* height: 50px;
+	width: 50px; */
+}
+.bgh1{
+	background-color: #FFB054 !important;
+	border: none !important;
+}
+header a:hover{
+	color: #ffffff !important;
+}
+.menu{
+	width: 100px;
+	height: 100px;
+}
+.menu:focus{
+	box-shadow: none !important;
+}
+/*Хеадер конец*/
+/*1 блок начало*/
+
+.bgb1{
+	/* Местоположение фоновой картинки */  	background-image: url("/public/img/Фоновая_картинка3.png");
+	/* Фоновое изображение выровнено по центру в горизонтальной и вертикальной плоскостях */   background-position: center center;
+	/* Фон не повторяется */   background-repeat: no-repeat;
+	/* Фон зафиксирован в области просмотра и потому не двигается, когда высота контента превышает высоту изображения */   background-attachment: fixed;
+	/* Это свойство заставляет фон менять масштаб при изменении размеров содержащего его контейнера*/   background-size: cover;
+	height: 950px;
+}
+.block1 h1{
+	font-weight: 800;
+	letter-spacing: 0.5px;
+
+	color: #FF9838;
+	-webkit-text-stroke: 2px black;/*Черная обводка текста (webkit - префикс от фреймворка WebKit, text-stroke - настраивает обводку*/
+}
+.block1 a{
+	background: rgba(193,237,123,.7);
+	color: #FFFFFF;
+	border: 0px;
+	border-radius: 60px;
+	height: 70px;
+	font-family: Raleway;
+	font-weight: bold;
+	font-size: 30px;
+	line-height: 30px;
+	padding-top: 19px;
+}
+/*Конец 1-го блока*/
+/*2 блок начало*/
+.block2{
+	height: 600px;
+
+}
+.block2 h2{
+	height: 50px;
+/*	background-color:#FFB054;*/
+}
+.prodykty input, .prodykty2 input, .prodykty2 a, .prodykty a{
+	background: rgb(137,207,45);/*цвет в ргб*/
+	color: #FFFFFF;
+	border-radius: 60px;
+	border: 0px;
+	margin-bottom: 45px;
+	height: 50px;
+	font-family: Raleway;
+	font-weight: bold;
+	font-size: 20px;
+}
+/*2 блок конец*/
+/*3 блок начало*/
+.block3{
+	height: 600px;
+
+}
+/*3 блок конец*/
+/*4 блок начало*/
+.block4{
+	height: 600px;
+
+}
+/*4 блок конец*/
+/*5 блок начало*/
+.block5{
+	height: 600px;
+
+}
+/*5 блок конец*/
+/*Доставка начало(вроде 6 блок)*/
+.dostavka{
+	height: 400px;
+}
+
+.dostavka p{
+	font-size: 20px;
+	line-height: 35px;
+	padding-bottom: 25px;
+}
+.dostavka img{
+	height: 100px;
+	margin-right: 25px;
+}
+/*6 блок конец*/
+/*футер начало*/
+footer{
+	height: auto;
+	background-color: #FFB054 !important;
+}
+.knf h2{
+	margin-left: 6px;
+	margin-right: 6px;
+}
+.kontakt p{
+	padding-left: 20px;
+}
+/* Прочее */
+/* Модальное окно */
+.modh,.modf{
+	background-color: #FFB054;
+}
+.modb1{
+	background-color: rgb(137,207,45) !important;/*цвет в ргб*/
+	
+}
+/*Конец модального окна*/
+/*Черты под загаловками*/
+.cherty{
+	border-top: 3px solid rgb(137,207,45);
+	width: 50px;
+	height: 5px;
+	margin-bottom: 15px;
+}
+/* Размеры картиночек */
+.prodykty img{
+	/* height: 250px !important; */
+}
+.prodykty2 img{
+	/* height: 250px !important; */
+}
+/* Оплата и всё для оплаты */
+.oplata{
+	box-shadow: 0 2px 10px rgb(0 0 0 / 25%);
+}
+.bgb2{
+}
+.oplata2{
+	box-shadow: 0 2px 10px rgb(0 0 0 / 25%);
+	margin: 170px;
+}
+.oplata textarea{
+	resize: none;
+	height: 150px;
+}
+.oplaty-sel span{
+	padding: 10px;
+}
+.oplaty-footer2{
+	background-color: #FFB054;
+}
+.oplaty-footer{
+	padding-top: 10px;
+}
+.oplata .oplaty-naz{
+	padding-top: 15px;
+	
+}
+.oplata input{
+	/* padding-bottom: 10px;  */
+	/* padding-left: 70px;  */
+	/* height: 45px; */
+	/* width: 2vw;  */
+}
+.oplaty-footer button{
+	width: 30vw;
+	background: rgb(137,207,45);
+	color: #FFFFFF;
+	border-radius: 60px;
+	border: 0px;
+	height: 50px;
+	font-family: Raleway;
+	font-weight: bold;
+	font-size: 25px;
+}

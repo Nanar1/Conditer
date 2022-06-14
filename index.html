@@ -1,0 +1,616 @@
+
+<?php
+    if(session('islogin')){
+        $email = DB::table('users')->where('login', '=', session('login'))->value('email');
+        $FI = DB::table('users')->where('login', '=', session('login'))->value('FI');
+        $status = DB::table('users')->where('login', '=', session('login'))->value('status');
+        $user_id = DB::table('users')->where('login', '=', session('login'))->value('id');
+        session(['status' => $status]);
+        session(['user_id' => $user_id]);
+        
+    }
+?>
+<!DOCTYPE html><!-- Версия HTML -->
+<html lang="ru"> <!-- Тег показывающий начало и конец файла(атрибут lang означает язык сайта(нужен для поисковиков)) -->
+<head><!-- Не видимый для пользователя контент -->
+    <meta charset="utf-8"><!-- Кодировка -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Лучшая кондитерская</title>
+    <link rel="stylesheet" href={{ URL::asset('\css\NytipoCSS.css') }} rel="stylesheet" type="text/css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="\public\css\bootstrap.css" rel="stylesheet">
+    
+</head>
+<body>
+
+
+<!-- <script scr="/public/js/popover.js"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- <script scr="public\js\bootstrap.bundle.js"></script> -->
+<!-- <script scr="\public\js\bootstrap.js"></script> -->
+
+
+
+
+
+
+<header>
+<div class="container-xs container-sm container-lg head1">
+    <div class="row ">
+        <div class="col-sm-12 col-lg-3">
+            <div class="d-sm-flex justify-content-sm-between d-lg-block ">
+                <a href="#"><img src="/public/img/inst.png" class="img-fluid"></a>
+                <a href="#"><img src="/public/img/youtube.png" class="img-fluid"></a>
+                <a href="#"><img src="/public/img/ivk.png" class="img-fluid"></a>
+            </div>
+        </div>
+        <div class="col-xs-5 col-lg-5">
+            <h2 class="text-center konaz pt-3">Сеть кондитерских NEKO</h2>
+        </div>
+        @if(session('islogin'))
+        <div class="col-xs-2 col-lg-2">
+            <h2 class="pt-3" ><a href="#" class="btn btn-outline-dark btn-lg w-100" data-bs-toggle="modal" data-bs-target="#exampleModal4">Корзина</a></h2>
+        </div>
+        <div class="col-xs-2 col-lg-2">
+            <h2 class="pt-3"><a href="#" class="btn btn-outline-dark  btn-lg w-100" data-bs-toggle="modal" data-bs-target="#exampleModal3">Профиль</a></h2>
+        </div>
+        @elseif(session('status')=='admin')
+        <div class="col-xs-2 col-lg-2">
+            <h2 class="pt-3" ><a href="#" class="btn btn-outline-dark btn-lg w-100" data-bs-toggle="modal" data-bs-target="#exampleModal5">Редактирование</a></h2>
+        </div>
+        <div class="col-xs-2 col-lg-2">
+            <h2 class="pt-3"><a href="#" class="btn btn-outline-dark  btn-lg w-100" data-bs-toggle="modal" data-bs-target="#exampleModal3">Профиль</a></h2>
+        </div>
+        
+        @else
+        <div class="col-xs-2 col-lg-2">
+            <h2 class="pt-3" ><a href="#" class="btn btn-outline-dark btn-lg w-100" data-bs-toggle="modal" data-bs-target="#exampleModal2">Вход</a></h2>
+        </div>
+        <div class="col-xs-2 col-lg-2">
+            <h2 class="pt-3"><a href="#" class="btn btn-outline-dark  btn-lg w-100" data-bs-toggle="modal" data-bs-target="#exampleModal">Регистрация</a></h2>
+        </div>
+        @endif
+    </div>
+</div>
+
+ <!-- Модальное окно Корзины -->
+ <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header modh">
+                <h5>Корзина товаров</h5>
+                <a id="zakavBut" href="#reg"></a>
+            </div>
+            <div class="modal-body">
+                @if(session('islogin'))
+                
+                    @php
+                    $proverka=DB::table('prusid')->where('user_id', '=', $user_id)->pluck('products_id');
+                    $pricee=0;
+                    $bCount=1;
+                    $numer=0;
+                    @endphp
+                    @if($proverka!="[]")
+                    <table class="table table-bordered">
+                    <tr>
+                        <th>№</th>
+                        <th>Наименование</th>
+                        <th>описание</th>
+                        <th>Цена</th>
+                        <th>Кол-во</th>
+                        <th>Стоимость</th>
+                    </tr>
+                    @foreach($proverka as $prod)
+                        @php
+                        $produktUser=DB::table('products')->where('id', '=', $prod)->get();
+                        @endphp
+                        @foreach($produktUser as $prod2)
+                        @php
+                        $bCount=DB::table('prusid')->where('products_id', '=', $prod2->id)->value('quantity');
+                        $numer++;
+                        $itemCost=$bCount*$prod2->price;
+                        $pricee=$itemCost+$pricee;
+                        @endphp
+                        <tr>
+                            <td>{{ $numer }}</td>
+                            <td>
+                                <h3>{{ $prod2->naz_product }}</h3>
+                            </td>
+                            <td>
+                                <p>{{ $prod2->description }}</p>
+                            </td>
+                            <td>{{ number_format($prod2->price, 2, '.', '') }}</td>
+                            <td class="d-flex">
+                                <a href="{{ route('gobasket', ['id' => $prod2->id]) }}" class="text-decoration-none "><img src="/public/img/plus-square.png" alt="" height="20"></a>
+                                <span class="m-2">{{ $bCount }}</span>
+                                <a href="{{ route('gominbasket', ['id' => $prod2->id]) }}" class="text-decoration-none "><img src="/public/img/dash-square.png" alt="" height="20"></a>
+                            </td>
+                            <td>{{ number_format($itemCost, 2, '.', '') }}
+                            <a href="{{ route('gooutbasket', ['id' => $prod2->id]) }}" class="btn btn-close" aria-label="Close"></a></td>
+                        </tr>
+                        @endforeach
+                    @endforeach   
+                    <tr>
+                        <th colspan="5" class="text-end">Итого:</th>
+                        <th>{{ number_format($pricee, 2, '.', '') }}</th>
+                    </tr>
+                    </table>  
+                    @else
+                    <h5>Ваша корзина пуста</h5>
+                    @endif
+                @endif
+            </div>
+                <div class="modal-footer modf">
+                    @if(session('islogin') and $proverka!="[]")
+                    <h2>Всего: {{ $pricee }} руб.</h2>
+                    <button type="button" class="btn btn-lg btn-dark" data-bs-dismiss="modal" name="subm">Закрыть</button>
+                    <h2><a class="btn btn-success modb1 btn-lg" href="{{ route('buying', ['price' => $pricee, 'final' => 0]) }}">Оплатить</a></h2>
+                
+                    @else                    
+                    <button type="button" class="btn btn-lg btn-dark" data-bs-dismiss="modal" name="subm">Закрыть</button>
+                    @endif
+                </form>
+                </div>
+        </div>
+    </div>
+</div>
+<!-- Конец модального окна -->
+
+
+ <!-- Модальное окно Профиля -->
+ <div class="modal fade" id="exampleModal3" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modh">
+                    <h5 class="modal-title">Профиль</h5>
+            </div>
+            <div class="modal-body">
+                    @if(session('islogin'))
+                    <p >Фамилия и Имя: <span ><?echo $FI?></span></p>
+                    <p >Ваш логин: <span ><?echo session('login')?></span></p>
+                    <p >Ваш email: <span ><?echo $email?></span></p>
+                    @endif
+            </div>
+            <div class="modal-footer modf">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal" name="subm">Закрыть</button>
+                <form action="{{ route('logOut') }}" id="logout" >
+                    <input type="submit" class='btn btn-primary' value="Выйти из аккаунта" >
+                </form>
+                <form action="{{ route('deleteAcc') }}" id="deleteProfile">
+                    <input type="submit" class='btn btn-danger' value="Удалить аккаунт">
+                </form>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Конец модального окна -->
+
+
+ <!-- Модальное окно Авторизации -->
+<div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modh">
+                <h5 class="modal-title" id="exampleModalLabel">Заполните форму для авторизации</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+            <form action="{{route('login')}}" method="post">
+                @csrf
+                
+                     @if($errors->any())
+                        <div class="alert alert-danger">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                                <li>  {{ $error }} </li>
+                            @endforeach
+                        </ul>
+                        </div>
+                    @endif  
+                    <div class="form-group">
+                        <label for="login">Логин</label>
+                        <p>(Логин должен содержать только латинские буквы и цифры)</p>
+                        <input type="text" name="login" id="loginLog" placeholder="Введите логин" class='form-control'>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" name="password" id="passwordLog" placeholder="Введите пароль" class='form-control' >
+                    </div>
+
+            
+
+            </div>
+            <div class="modal-footer modf">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal" name="subm">Закрыть</button>
+                <button type="button"  class="btn btn-primary" data-bs-dismiss="modal"  data-bs-toggle="modal" data-bs-target="#exampleModal"  name="subm" >Вы здесь впервые?</button>
+                <button type="submit" class="modb1 btn btn-success">Войти</button>
+                
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Конец модального окна -->
+
+<!-- Модальное окно Регистрации -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header modh">
+                <h5 class="modal-title" id="exampleModalLabel">Заполните форму для регистрации</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('registration') }}" method="post" id="registration">
+                    @csrf
+
+
+                    
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                                <li>  {{ $error }} </li>
+                            @endforeach
+                        </ul>
+                        </div>
+                    @endif 
+                    <div class="form-group">
+                        <label for="fio">ФИO</label>
+                        <input type="text" name="FI" id='FI' placeholder="Введите Фамилию и Имя" class='form-control'>
+                    </div>
+                    <div class="form-group">
+                        <label for="login">Логин</label>
+                        <input type="text" name="login" id='loginReg' placeholder="Введите логин(От 5 до 25 символов)" class='form-control'>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="text" name="email" id='email' placeholder="Введите email" class='form-control' >
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" name="password"  id='passwordReg' placeholder="Введите пароль" class='form-control'>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirm">Подтверждение пароля</label>
+                        <input type="password" name="password_confirmation" id='passwordReg2' placeholder="Повторно введите пароль" class='form-control'>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="check" required>
+                        <label class="form-check-label" for="check">Согласен с правилами и условиями</label>
+                    </div>
+            </div>
+            <div class="modal-footer modf">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal" name="subm">Закрыть</button>
+                <button type="button"  class="btn btn-primary" data-bs-dismiss="modal"  data-bs-toggle="modal" data-bs-target="#exampleModal2"  name="subm" >У вас есть аккаунт?</button>
+                <button type="submit" class="modb1 btn btn-success">Зарегистрироваться</button>
+                </form>    
+            </div>
+            
+        </div>
+    </div>
+</div>
+<!-- Конец модального окна -->
+
+
+    <hr id="cherta">
+    <div class="d-lg-none d-sm-flex d-xs-flex justify-content-center">
+        <button type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample"
+                class="btn d-lg-none m-2 d-xs-flex d-sm-flex col-12 menu">
+            <img src="/public/img/Menu.png" class="img-fluid">
+        </button>
+    </div>
+    <nav class="container-sm d-none d-lg-block container-lg head2">
+        <div class="row pb-2 knop">
+            <div class="col-xs col-lg">
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll1">Лучшее</a></h2>
+            </div>
+            <div class="col-xs col-lg">
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll2">Наборы</a></h2>
+            </div>
+            <div class="col-xs col-lg">
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll3">Торты</a></h2>
+            </div>
+            <div class="col-xs col-lg">
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll4">Пирожные</a></h2>
+            </div>
+            <div class="col-xs col-lg">
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll5">Доставка</a></h2>
+            </div>
+        </div>
+    </nav>
+
+    <div class="collapse d-lg-none" id="collapseExample">
+        <div class="card card-body bgh1">
+            <nav class="container-xs d-lg-none container-lg">
+                <div class="row pb-2 knop">
+                    <div class="col-xs col-lg">
+                        <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll1">Лучшее</a></h2>
+                    </div>
+                    <div class="col-xs col-lg">
+                        <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll2">Наборы</a></h2>
+                    </div>
+                    <div class="col-xs col-lg">
+                        <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll3">Торты</a></h2>
+                    </div>
+                    <div class="col-xs col-lg">
+                        <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll4">Пирожные</a></h2>
+                    </div>
+                    <div class="col-xs col-lg">
+                        <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll5">Доставка</a></h2>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</header>
+<div class="bgb1 container-md container-lg container-sm mw-100 mh-100 justify-content-sm-center">
+    <div class="block1 row">
+        <div class="col-12 w-50 m-5">
+            <h1 class="display-1">Тут готовят лучшие десерты из растительных ингредиентов</h1>
+        </div>
+    </div>
+    <div class="row p-5">
+        <div class="block1 col-12">
+            <a href="#scroll1" class=" btn btn-success btn-lg m-2">Смотреть меню</a>
+        </div>
+    </div>
+    @if(!session('islogin'))
+    <div class="block1 row justify-content-end">
+         <div class="col-lg-5 col-md-6 col-sm-9 hello">
+            <h1 class="display-5 pt-2 text-end">Зарегистрируйтесь на сайте, чтобы заказать!</h1>
+        </div>
+    </div>
+    @else
+    <div class="block1 row justify-content-end ">
+    <div class="col-lg-5">
+        <h1 class="display-5 text-end">Добро пожаловать, <span ><?echo session('login')?>!</span></h1>
+    </div>
+    </div>
+    @endif
+</div>
+
+
+<div class="block2 container-xs container-lg container-sm mw-100 w-100 mh-100 h-100 mt-5">
+    <h2 class="text-center" id="scroll1">Лучшее</h2>
+    <div class="d-flex justify-content-center">
+        <div class="cherty"></div>
+    </div>
+    <div class="prodykty d-flex row text-center">
+            @if (Schema::hasTable('products'))
+                <? $products = DB::table('products')->where('naz_product', '=', 'Вишневый джем')->get(); ?>
+                @foreach($products as $product)
+                <?session(['productid' => $product->id]); session(['quantity' => $product->price]); ?>
+                    <div class="prodykt7 col-xs col-lg">
+                        <img src="/public/img/Картинка товара{{$product->id}}.png" class="img-fluid" height="250" width="390">
+                        <h3 class="nazprodykt">{{ $product->naz_product }}</h3>
+                        <p class="opprodykt">{{$product->description}} <br><br><br> {{$product->price}} p.</p>
+                        @if(session('islogin'))   
+                        <a href="{{ route('gobasket', ['id' => $product->id]) }}" 
+                        class="btn btn-success korzsub pt-2">Добавить в корзину</a>
+                        @else
+                        
+                        <a tabindex="0" class="btn btn-success korzsub pt-2" 
+                        role="button" data-bs-toggle="popover"
+                        data-bs-trigger="focus" 
+                        title="Войди, чтобы продолжить!" 
+                        data-bs-content='Чтобы что-то заказать, нужно зарегистрироваться'>Добавить в корзину</a>
+                        @endif
+                    </div>
+                @endforeach
+            @endif
+            @if (Schema::hasTable('products'))
+                <? $products = DB::table('products')->where('naz_product', '=', 'Манго, маракуя и кокос')->get(); ?>
+                @foreach($products as $product)
+                <?session(['productid' => $product->id]); session(['quantity' => $product->price]); ?>
+                    <div class="prodykt7 col-xs col-lg">
+                        <img src="/public/img/Картинка товара{{$product->id}}.png" class="img-fluid" height="250" width="390">
+                        <h3 class="nazprodykt">{{ $product->naz_product }}</h3>
+                        <p class="opprodykt">{{$product->description}} <br><br><br> {{$product->price}} p.</p>
+                        @if(session('islogin'))   
+                        <a href="{{ route('gobasket', ['id' => $product->id]) }}" 
+                        class="btn btn-success korzsub pt-2">Добавить в корзину</a>
+                        @else
+                        
+                        <a tabindex="0" class="btn btn-success korzsub pt-2" 
+                        role="button" data-bs-toggle="popover"
+                        data-bs-trigger="focus" 
+                        title="Войди, чтобы продолжить!" 
+                        data-bs-content='Чтобы что-то заказать, нужно зарегистрироваться'>Добавить в корзину</a>
+                        @endif
+                    </div>
+                @endforeach
+            @endif
+            @if (Schema::hasTable('products'))
+                <? $products = DB::table('products')->where('naz_product', '=', 'Шоколадный взрыв')->get(); ?>
+                @foreach($products as $product)
+                <?session(['productid' => $product->id]); session(['quantity' => $product->price]); ?>
+                    <div class="prodykt7 col-xs col-lg">
+                        <img src="/public/img/Картинка товара{{$product->id}}.png" class="img-fluid" height="250" width="390">
+                        <h3 class="nazprodykt">{{ $product->naz_product }}</h3>
+                        <p class="opprodykt">{{$product->description}} <br><br><br> {{$product->price}} p.</p>
+                        @if(session('islogin'))   
+                        <a href="{{ route('gobasket', ['id' => $product->id]) }}" 
+                        class="btn btn-success korzsub pt-2">Добавить в корзину</a>
+                        @else
+                        
+                        <a tabindex="0" class="btn btn-success korzsub pt-2" 
+                        role="button" data-bs-toggle="popover"
+                        data-bs-trigger="focus" 
+                        title="Войди, чтобы продолжить!" 
+                        data-bs-content='Чтобы что-то заказать, нужно зарегистрироваться'>Добавить в корзину</a>
+                        @endif
+                    </div>
+                @endforeach
+            @endif
+            @if (Schema::hasTable('products'))
+                <? $products = DB::table('products')->where('naz_product', '=', 'Коробочка №3')->get(); ?>
+                @foreach($products as $product)
+                <?session(['productid' => $product->id]); session(['quantity' => $product->price]); ?>
+                    <div class="prodykt7 col-xs col-lg">
+                        <img src="/public/img/Картинка товара{{$product->id}}.png" class="img-fluid" height="250" width="390">
+                        <h3 class="nazprodykt">{{ $product->naz_product }}</h3>
+                        <p class="opprodykt">{{$product->description}} <br><br><br><br> {{$product->price}} p.</p>
+                        @if(session('islogin'))   
+                        <a href="{{ route('gobasket', ['id' => $product->id]) }}" 
+                        class="btn btn-success korzsub pt-2">Добавить в корзину</a>
+                        @else
+                        
+                        <a tabindex="0" class="btn btn-success korzsub pt-2" 
+                        role="button" data-bs-toggle="popover"
+                        data-bs-trigger="focus" 
+                        title="Войди, чтобы продолжить!" 
+                        data-bs-content='Чтобы что-то заказать, нужно зарегистрироваться'>Добавить в корзину</a>
+                        @endif
+                    </div>
+                @endforeach
+            @endif
+    </div>
+</div>
+<div class="block3 container-xs container-lg container-sm mw-100 w-100 mh-100 h-100">
+    <h2 class="text-center" id="scroll2">Наборы</h2>
+    <div class="d-flex justify-content-center">
+        <div class="cherty"></div>
+    </div>
+    <div class="prodykty2 row pt-1 text-center">
+        @if (Schema::hasTable('products'))
+            <? $products = DB::table('products')->where('vid', '=', 'Наборы')->get(); ?>
+            @foreach($products as $product)
+            <?session(['productid' => $product->id]); session(['quantity' => $product->price]); ?>
+                <div class="prodykt7 col-xs col-lg">
+                    <img src="/public/img/Картинка товара{{$product->id}}.png" class="img-fluid" height="250" width="390">
+                    <h3 class="nazprodykt">{{ $product->naz_product }}</h3>
+                    <p class="opprodykt">{{$product->description}} <br><br> {{$product->price}} p.</p>
+                    @if(session('islogin'))   
+                    <a href="{{ route('gobasket', ['id' => $product->id]) }}" 
+                    class="btn btn-success korzsub pt-2">Добавить в корзину</a>
+                    @else
+                    
+                    <a tabindex="0" class="btn btn-success korzsub pt-2" 
+                    role="button" data-bs-toggle="popover"
+                    data-bs-trigger="focus" 
+                    title="Войди, чтобы продолжить!" 
+                    data-bs-content='Чтобы что-то заказать, нужно зарегистрироваться'>Добавить в корзину</a>
+                    @endif
+                </div>
+            @endforeach
+        @endif
+    </div>
+</div>
+<div class="block4 container-xs container-lg container-sm mw-100 w-100 mh-100 h-100">
+    <h2 class="text-center" id="scroll3">Торты</h2>
+    <div class="d-flex justify-content-center">
+        <div class="cherty"></div>
+    </div>
+    <div class="prodykty2 text-center row pt-1">
+        @if (Schema::hasTable('products'))
+            <? $products = DB::table('products')->where('vid', '=', 'Торты')->get();?>
+            @foreach($products as $product)
+                <div class="prodykt7 col-xs col-lg">
+                    <img src="/public/img/Картинка товара{{$product->id}}.png" class="img-fluid" height="250" width="390">
+                    <h3 class="nazprodykt">{{ $product->naz_product }}</h3>
+                    <p class="opprodykt">{{$product->description}} <br><br> {{$product->price}} p.</p>
+                    @if(session('islogin'))   
+                    <a href="{{ route('gobasket', ['id' => $product->id]) }}" class="btn btn-success korzsub pt-2">Добавить в корзину</a>
+                    @else 
+                    <a tabindex="0" class="btn btn-success korzsub pt-2" 
+                    role="button" data-bs-toggle="popover"
+                    data-bs-trigger="focus" 
+                    title="Войди, чтобы продолжить!" 
+                    data-bs-content='Чтобы что-то заказать, нужно зарегистрироваться'>Добавить в корзину</a>
+                    @endif
+                </div>
+            @endforeach
+        @endif
+    </div>
+</div>
+
+<div class="block5 container-xs container-lg container-sm mw-100 w-100 mh-100 h-100">
+    <h2 class="text-center" id="scroll4">Пирожные</h2>
+    <div class="d-flex justify-content-center">
+        <div class="cherty"></div>
+    </div>
+    <div class="prodykty2 text-center row pt-1">
+        @if (Schema::hasTable('products'))
+            <? $products = DB::table('products')->where('vid', '=', 'Пирожные')->get(); ?>
+            @foreach($products as $product)
+        
+                <div class="prodykt7 col-xs col-lg">
+                    <img src="/public/img/Картинка товара{{ $product->id }}.png" class="img-fluid" height="250" width="390">
+                    <h3 class="nazprodykt">{{ $product->naz_product }}</h3>
+                    <p class="opprodykt">{{$product->description}} <br><br> {{$product->price}} p.</p>
+                    @if(session('islogin'))   
+                    <a href="{{ route('gobasket', ['id' => $product->id]) }}" class="btn btn-success korzsub pt-2">Добавить в корзину</a>
+                    @else
+                    
+                    <a tabindex="0" class="btn btn-success korzsub pt-2" 
+                    role="button" data-bs-toggle="popover"
+                    data-bs-trigger="focus" 
+                    title="Войди, чтобы продолжить!" 
+                    data-bs-content='Чтобы что-то заказать, нужно зарегистрироваться'>Добавить в корзину</a>
+                    @endif
+                </div>
+            @endforeach
+        @endif
+    </div>
+</div>
+<div class="dostavka container-xs container-lg container-sm mw-100 w-100 mh-100 h-100 mt-5">
+    <h1 class="text-center" id="scroll5">Условия доставки и оплаты</h1>
+    <div class="d-flex justify-content-center">
+        <div class="cherty"></div>
+    </div>
+    <div class="col-xs-12 col-lg-12">
+
+        <div id="pos" class="d-flex justify-content-center">
+            <p><img src="/public/img/Доставка1.png" class="img-fluid d-inline float-start"></p><p>Заказы на сайте принимаются <b>круглосуточно</b>, обрабатываются в рабочее время c 9:30 до 21:00.<br>
+
+                Забрать свой заказ можно в нашей кондитерской напрямую по адресу: Кемерово, Октябрьский 9.<br>
+                Заказы, оформленные<b> после 20:00</b>, доставляются на следующий день.<br>
+
+                Доставить можно даже до <b>Кировского.</b><br>
+
+                <b>Самовывоз из кафе!</b><br>
+            </p>
+        </div>
+    </div>
+</div>
+<footer>
+
+    <div class="container-xs container-lg container-sm mw-100 w-100 mh-100 h-100">
+        <div class="row ">
+            <div class="col-xs-3 d-sm-flex d-lg-block col-lg-3 justify-content-center pt-2 kontakt">
+                <p><img src="/public/img/phone (2).png" width="30"> Контактный телефон: 8(ххх)ххх-хх-хх</p>
+                <p><img src="/public/img/Дом.png" width="30" > Адрес: Кемерово, Октябрьский 9</p>
+                <p><img src="/public/img/E-mail.png" width="30" > Почта: koly.bessonov.2004@mail.ru</p>
+            </div>
+
+            <nav class="col-xs-6 d-lg-flex justify-content-center col-lg-6 knf pt-4">
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll1">Лучшее</a></h2>
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll2">Наборы</a></h2>
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll3">Торты</a></h2>
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll4">Пирожные</a></h2>
+                <h2><a class="btn btn-outline-dark btn-lg w-100" href="#scroll5">Доставка</a></h2>
+            </nav>
+
+            <div class="col-xs-3 col-lg-3 text-center pt-2"><h3 class="gd">Генеральный директор:<br>Бессонов Н.Н.</h3></div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+ })
+</script>
+
+</body>
+</html>
